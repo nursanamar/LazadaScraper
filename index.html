@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <input type="text" id="link">
+    <button onclick="scrape()" >Scrape</button>
+    <span id="loading" style="display: none">Loading.....</span>
+    <div id="result">
+        <h3 class="title"></h3>
+        <span class="price"></span>
+        <span>Diskon :</span>
+        <span class="discount"></span>
+        <span>harga asli</span>
+        <span class="ori"></span>
+        <h4>foto</h4>
+        <div id="foto">
+
+        </div>
+        <h4>Detail</h4>
+        <div id="detail">
+
+        </div>
+        <h4>Desc</h4>
+        <div id="desc">
+
+        </div>
+    </div>
+
+    <script src="jquery.js"></script>
+    <script>
+        function scrape() {
+            $("#loading").show();
+            let link = $("#link").val()
+            fetch(link).then((res) => {
+                console.log(res)
+               return res.text();
+            }).then(html => {
+                console.log(html)
+                let lzada = $(html);
+                console.log(lzada);
+                let priceOri = $(".pdp-price_type_deleted", lzada).text()
+                let discon = $(".pdp-product-price__discount", lzada).text()
+                let price = $(".pdp-price_type_normal",lzada).text();
+                let title = $(".pdp-product-title", lzada).text();
+                let detail = $(".pdp-product-highlights",lzada);
+                let description = $(".detail-content",lzada);
+                let img = [];
+                $(".gallery-preview-panel__image",lzada).each((index,el) => {
+                   let src = $(el).attr('src');
+                    $("#foto").append("<img src='"+src+"' />")
+                })
+                console.log(detail)
+                console.log(description)
+                $(".title").html(title);
+                $(".price").html(price);
+                $("#detail").html(detail);
+                $("#desc").html(description);
+
+                $(".discount").html(discon)
+                $(".ori").html(priceOri);
+                $("#loading").hide();
+            })
+        }
+    </script>
+</body>
+</html>
